@@ -21,8 +21,6 @@
 extern "C" {
 #endif
 
-int hotspot_load_driver();
-int hotspot_unload_driver();
 /**
  * Load the Wi-Fi driver.
  *
