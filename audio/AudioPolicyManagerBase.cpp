@@ -2265,6 +2265,9 @@ AudioPolicyManagerBase::routing_strategy AudioPolicyManagerBase::getStrategy(
         // while key clicks are played produces a poor result
     case AudioSystem::TTS:
     case AudioSystem::MUSIC:
+#if defined(QCOM_FM_ENABLED) || defined(USES_AUDIO_LEGACY)
+    case AudioSystem::FM:
+#endif
         return STRATEGY_MEDIA;
     case AudioSystem::ENFORCED_AUDIBLE:
         return STRATEGY_ENFORCED_AUDIBLE;
@@ -2924,6 +2927,13 @@ const AudioPolicyManagerBase::VolumeCurvePoint
         sSpeakerMediaVolumeCurve, // DEVICE_CATEGORY_SPEAKER
         sDefaultMediaVolumeCurve  // DEVICE_CATEGORY_EARPIECE
     },
+#if defined(QCOM_FM_ENABLED) || defined(USES_AUDIO_LEGACY)
+    { // AUDIO_STREAM_FM
+        sDefaultMediaVolumeCurve, // DEVICE_CATEGORY_HEADSET
+        sSpeakerMediaVolumeCurve, // DEVICE_CATEGORY_SPEAKER
+        sDefaultMediaVolumeCurve  // DEVICE_CATEGORY_EARPIECE
+    },
+#endif
 };
 
 void AudioPolicyManagerBase::initializeVolumeCurves()

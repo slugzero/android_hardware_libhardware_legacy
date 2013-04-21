@@ -81,6 +81,9 @@ public:
         ENFORCED_AUDIBLE = 7, // Sounds that cannot be muted by user and must be routed to speaker
         DTMF             = 8,
         TTS              = 9,
+#if defined(QCOM_FM_ENABLED) || defined(USES_AUDIO_LEGACY)
+        FM               = 10,
+#endif
         NUM_STREAM_TYPES
     };
 
