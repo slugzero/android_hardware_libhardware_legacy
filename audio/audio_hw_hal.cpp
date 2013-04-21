@@ -144,7 +144,12 @@ static audio_channel_mask_t out_get_channels(const struct audio_stream *stream)
 {
     const struct legacy_stream_out *out =
         reinterpret_cast<const struct legacy_stream_out *>(stream);
-    return (audio_channel_mask_t) out->legacy_out->channels();
+   
+#ifndef USES_AUDIO_LEGACY
+     return (audio_channel_mask_t) out->legacy_out->channels();
+#else
+     return (audio_channel_mask_t) out->legacy_out->channels() >> 2;
+#endif
 }
 
 static audio_format_t out_get_format(const struct audio_stream *stream)
@@ -529,6 +534,7 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
                                                     &config->channel_mask,
                                                     &config->sample_rate, &status);
 #else
+	*channels = *channels << 2;
     out->legacy_out = ladev->hwif->openOutputStream(devices, format, channels,
                                                     sample_rate, &status);
 #endif
@@ -537,7 +543,7 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
         ret = status;
         goto err_open;
     }
-
+	*channels = *channels >> 2;
     out->stream.common.get_sample_rate = out_get_sample_rate;
     out->stream.common.set_sample_rate = out_set_sample_rate;
     out->stream.common.get_buffer_size = out_get_buffer_size;
