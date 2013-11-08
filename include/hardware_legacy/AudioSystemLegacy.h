@@ -81,7 +81,9 @@ public:
         ENFORCED_AUDIBLE = 7, // Sounds that cannot be muted by user and must be routed to speaker
         DTMF             = 8,
         TTS              = 9,
+#ifdef USES_AUDIO_LEGACY
         STREAM_FM        = 10,
+#endif
         NUM_STREAM_TYPES
     };
 
