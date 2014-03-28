@@ -622,7 +622,7 @@ int phy_lookup()
     int fd, pos;
     struct dirent **namelist;
     int n, i;
-    sleep(1);
+
     n = scandir("/sys/class/ieee80211", &namelist, dir_filter,
                 (int (*)(const struct dirent**, const struct dirent**))alphasort);
     if (n != 1) {
@@ -887,6 +887,13 @@ int wifi_stop_supplicant(int p2p_supported)
         && strcmp(supp_status, "stopped") == 0) {
         return 0;
     }
+
+#ifdef USES_TI_MAC80211
+    if (p2p_supported && add_remove_p2p_interface(0) < 0) {
+        ALOGE("Wi-Fi - could not remove p2p interface");
+        return -1;
+    }
+#endif
 
     property_set("ctl.stop", supplicant_name);
     sched_yield();
