@@ -69,9 +69,12 @@ public:
     /**
      * return the frame size (number of bytes per sample).
      */
+#ifndef USES_AUDIO_LEGACY
     uint32_t    frameSize() const { return audio_channel_count_from_out_mask(channels())*
                             ((format()==AUDIO_FORMAT_PCM_16_BIT)?sizeof(int16_t):sizeof(int8_t)); }
-
+#else
+    uint32_t    frameSize() const { return popcount(channels())*((format()==AUDIO_FORMAT_PCM_16_BIT)?sizeof(int16_t):sizeof(int8_t)); }
+#endif
     /**
      * return the audio hardware driver latency in milli seconds.
      */
@@ -146,8 +149,12 @@ public:
     /**
      * return the frame size (number of bytes per sample).
      */
+#ifndef USES_AUDIO_LEGACY
     uint32_t    frameSize() const { return audio_channel_count_from_in_mask(channels())*
                             ((format()==AudioSystem::PCM_16_BIT)?sizeof(int16_t):sizeof(int8_t)); }
+#else
+    uint32_t    frameSize() const { return AudioSystem::popCount(channels())*((format()==AudioSystem::PCM_16_BIT)?sizeof(int16_t):sizeof(int8_t)); }
+#endif
 
     /** set the input gain for the audio driver. This method is for
      *  for future use */
@@ -224,8 +231,9 @@ public:
      * primary audio HAL when the service starts and use the value for setting
      * the initial master volume across all HALs.
      */
+#ifndef USES_AUDIO_LEGACY
     virtual status_t    getMasterVolume(float *volume) = 0;
-
+#endif
     /**
      * setMode is called when the audio mode changes. NORMAL mode is for
      * standard audio playback, RINGTONE when a ringtone is playing, and IN_CALL
